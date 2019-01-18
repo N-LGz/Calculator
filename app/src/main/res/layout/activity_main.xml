@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,7 +23,9 @@
             android:ems="10"
             android:hint="@string/operation"
             android:inputType="number|numberSigned|numberDecimal"
+            android:singleLine="false"
             android:textAlignment="center"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <EditText
@@ -33,15 +36,17 @@
             android:layout_weight="2"
             android:ems="10"
             android:hint="@string/result"
+            android:singleLine="false"
             android:textAlignment="center"
+            android:textSize="24sp"
             android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginTop="50dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
@@ -58,7 +63,7 @@
                 android:layout_height="80dp">
 
                 <Button
-                    android:layout_width="70dp"
+                    android:layout_width="75dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:text="@string/seven"
@@ -82,6 +87,7 @@
                     android:layout_width="75dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
+                    android:text="@string/add"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
             </LinearLayout>
 
@@ -199,7 +205,7 @@
             <Button
                 android:id="@+id/button6"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="400dp"
                 android:layout_gravity="center"
                 android:text="="
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
