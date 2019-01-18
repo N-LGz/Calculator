@@ -2,7 +2,7 @@
     <!--Title-->
     <string name="app_name">POGCalculator</string>
     <!--Operand space-->
-    <string name="operation">Count here</string>
+    <string name="operation">Operation here</string>
     <string name="result">Result</string>
     <!--Buttons-->
     <string name="seven">7</string>
