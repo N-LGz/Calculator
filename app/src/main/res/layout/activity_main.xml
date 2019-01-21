@@ -16,6 +16,7 @@
         android:orientation="horizontal">
 
         <EditText
+            android:textColor="@color/colorPrimary"
             android:id="@+id/champ_opérations"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,6 +27,7 @@
             android:textAlignment="center" />
 
         <EditText
+            android:textColor="@color/colorPrimary"
             android:id="@+id/champ_résultat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
