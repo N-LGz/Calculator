@@ -86,68 +86,57 @@ public class Calculator extends AppCompatActivity {
                 break;
 
             case R.id.additionne:
-                if (displayOp== null) {
-                    displayOp.setText("");
-                } else {
+                try{
                     valueOne = Float.parseFloat(displayOp.getText() + "");
                     ifAddition = true;
                     displayOp.setText(null);
-                }
+                } catch(NumberFormatException e){ displayOp.setText(""); }
                 break;
-
             case R.id.soustrait:
-                if (displayOp == null) {
-                    displayOp.setText("");
-                } else {
+                try{
                     valueOne = Float.parseFloat(displayOp.getText() + "");
                     ifSubtract = true;
                     displayOp.setText(null);
-                }
+                }catch(NumberFormatException e){ displayOp.setText(""); }
                 break;
-
             case R.id.multiplie:
-                if (displayOp == null) {
-                    displayOp.setText("");
-                } else {
+                try{
                     valueOne = Float.parseFloat(displayOp.getText() + "");
                     ifMultiplication = true;
                     displayOp.setText(null);
-                }
+                }catch(NumberFormatException e){ displayOp.setText(""); }
                 break;
-
             case R.id.divise:
-                if (displayOp == null) {
-                    displayOp.setText("");
-                } else {
+                try{
                     valueOne = Float.parseFloat(displayOp.getText() + "");
                     ifDivision = true;
                     displayOp.setText(null);
-                }
+                }catch(NumberFormatException e){ displayOp.setText(""); }
                 break;
-
             case R.id.égal:
-                valueTwo = Float.parseFloat(displayOp.getText() + "");
+                try{
+                    valueTwo = Float.parseFloat(displayOp.getText() + "");
+                    if (ifAddition == true) {
+                        displayRes.setText(valueOne + valueTwo + "");
+                        ifAddition = false;
+                    }
 
-                if (ifAddition == true) {
-                    displayRes.setText(valueOne + valueTwo + "");
-                    ifAddition = false;
-                }
+                    if (ifSubtract == true) {
+                        displayRes.setText(valueOne - valueTwo + "");
+                        ifSubtract = false;
+                    }
 
-                if (ifSubtract == true) {
-                    displayRes.setText(valueOne - valueTwo + "");
-                    ifSubtract = false;
-                }
+                    if (ifMultiplication == true) {
+                        displayRes.setText(valueOne * valueTwo + "");
+                        ifMultiplication = false;
+                    }
 
-                if (ifMultiplication == true) {
-                    displayRes.setText(valueOne * valueTwo + "");
-                    ifMultiplication = false;
-                }
-
-                if (ifDivision == true) {
-                    displayRes.setText(valueOne / valueTwo + "");
-                    ifDivision = false;
-                }
-                displayOp.setText("");
+                    if (ifDivision == true) {
+                        displayRes.setText(valueOne / valueTwo + "");
+                        ifDivision = false;
+                    }
+                    displayOp.setText("");
+                } catch(NumberFormatException e){ displayOp.setText(""); }
                 break;
         }
     }
