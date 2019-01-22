@@ -49,7 +49,6 @@ public class Calculator extends AppCompatActivity {
             case R.id.zero:
                 displayOp.setText(displayOp.getText()+"0");
                 break;
-
             case R.id.un:
                 displayOp.setText(displayOp.getText()+"1");
                 break;
