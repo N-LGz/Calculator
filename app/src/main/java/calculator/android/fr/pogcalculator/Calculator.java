@@ -1,13 +1,17 @@
 package calculator.android.fr.pogcalculator;
 
-import android.app.AlertDialog;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 
 public class Calculator extends AppCompatActivity {
 
@@ -18,9 +22,11 @@ public class Calculator extends AppCompatActivity {
     EditText displayOp, displayRes;
 
     float valueOne=0, valueTwo=0;
+    char operator = 'h';
 
     boolean ifAddition, ifSubtract, ifMultiplication, ifDivision;
 
+    Handler handler_res;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,8 @@ public class Calculator extends AppCompatActivity {
 
         displayOp = findViewById(R.id.operand);
         displayRes = findViewById(R.id.result);
+
+        handler_res = new Handler();
     }
 
     public void Operand(View view){
@@ -93,6 +101,7 @@ public class Calculator extends AppCompatActivity {
                     valueOne = Float.parseFloat(displayOp.getText() + "");
                     ifAddition = true;
                     displayOp.setText(null);
+                    operator='+';
                 } catch (NumberFormatException e) { displayOp.setText(""); }
                 break;
 
@@ -101,6 +110,7 @@ public class Calculator extends AppCompatActivity {
                     valueOne = Float.parseFloat(displayOp.getText() + "");
                     ifSubtract = true;
                     displayOp.setText(null);
+                    operator='-';
                 } catch (NumberFormatException e) { displayOp.setText(""); }
                 break;
 
@@ -109,6 +119,7 @@ public class Calculator extends AppCompatActivity {
                     valueOne = Float.parseFloat(displayOp.getText() + "");
                     ifMultiplication = true;
                     displayOp.setText(null);
+                    operator='-';
                 } catch (NumberFormatException e) { displayOp.setText(""); }
                 break;
 
@@ -117,52 +128,47 @@ public class Calculator extends AppCompatActivity {
                     valueOne = Float.parseFloat(displayOp.getText() + "");
                     ifDivision = true;
                     displayOp.setText(null);
+                    operator='/';
                 } catch (NumberFormatException e) { displayOp.setText(""); }
                 break;
         }
 
-        LinearLayout rightrow = findViewById(R.id.rightrow);
+        LinearLayout right_row = findViewById(R.id.rightrow);
         if(ifAddition || ifSubtract || ifMultiplication || ifDivision){
             Button buttonEqual = new Button(this);
-            buttonEqual.setHeight(rightrow.getHeight());
-            buttonEqual.setWidth(rightrow.getWidth());
+            buttonEqual.setHeight(right_row.getHeight());
+            buttonEqual.setWidth(right_row.getWidth());
             buttonEqual.setText("=");
-            buttonEqual.setOnClickListener(egal);
-            rightrow.addView(buttonEqual);
+            buttonEqual.setOnClickListener(equal);
+            right_row.addView(buttonEqual);
         }
     }
 
-    View.OnClickListener egal = new View.OnClickListener() {
+    View.OnClickListener equal = new View.OnClickListener() {
+
         @Override
         public void onClick(View v) {
-            try {
-                valueTwo = Float.parseFloat(displayOp.getText() + "");
+            valueTwo = Float.parseFloat(displayOp.getText() + "");
+            Runnable runnable = () -> {
+                try {
+                    Socket s = new Socket("192.168.43.188", 9876);
+                    DataInputStream dis = new DataInputStream(s.getInputStream());
+                    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 
-                if (ifAddition == true) {
-                    displayRes.setText(valueOne + valueTwo + "");
-                    ifAddition = false;
+                    dos.writeDouble(valueOne);
+                    dos.writeChar(operator);
+                    dos.writeDouble(valueTwo);
+
+
+                    Double res  = dis.readDouble();
+                    displayRes.setText(res + "");
+
+                } catch (IOException e) {
+                    finish();
+                    e.printStackTrace();
                 }
-
-                if (ifSubtract == true) {
-                    displayRes.setText(valueOne - valueTwo + "");
-                    ifSubtract = false;
-                }
-
-                if (ifMultiplication == true) {
-                    displayRes.setText(valueOne * valueTwo + "");
-                    ifMultiplication = false;
-                }
-
-                if (ifDivision == true) {
-                    displayRes.setText(valueOne / valueTwo + "");
-                    ifDivision = false;
-                }
-
-                displayOp.setText("");
-                LinearLayout rightrow = findViewById(R.id.rightrow);
-                rightrow.removeAllViews();
-
-            } catch (NumberFormatException e) { displayOp.setText(""); }
+            };
+            new Thread(runnable).start();
         }
     };
 }
