@@ -1,57 +1,71 @@
 package calculator.android.fr.pogcalculator;
 
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Calculator extends AppCompatActivity {
+public class Calculator extends AppCompatActivity implements Operand_Fragment.FragmentActivity, DisplayFragment.FragmentActivity {
+
+    private static Calculator sInstance = null;
+
 
     Button button0, button1, button2, button3, button4, button5, button6,
             button7, button8, button9, buttonAdd, buttonSub, buttonDivision,
-            buttonMul;
+            buttonMul, buttonEqual;
 
     EditText displayOp, displayRes;
 
     float valueOne=0, valueTwo=0;
-    char operator = 'h';
+
+    char operator = 'o';
 
     boolean ifAddition, ifSubtract, ifMultiplication, ifDivision;
-
-    Handler handler_res;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button0 = findViewById(R.id.zero);
-        button1 = findViewById(R.id.un);
-        button2 = findViewById(R.id.deux);
-        button3 = findViewById(R.id.trois);
-        button4 = findViewById(R.id.quatre);
-        button5 = findViewById(R.id.cinq);
-        button6 = findViewById(R.id.six);
-        button7 = findViewById(R.id.sept);
-        button8 = findViewById(R.id.huit);
-        button9 = findViewById(R.id.neuf);
-        buttonAdd = findViewById(R.id.additionne);
-        buttonSub = findViewById(R.id.soustrait);
-        buttonMul = findViewById(R.id.multiplie);
-        buttonDivision = findViewById(R.id.divise);
+        sInstance = this;
 
-        displayOp = findViewById(R.id.operand);
-        displayRes = findViewById(R.id.result);
+        DisplayFragment display = new DisplayFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.display_layout, display).commit();
 
-        handler_res = new Handler();
+        Operand_Fragment opFragment = new Operand_Fragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.operand_layout, opFragment).commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu:
+                    Intent intent = new Intent(this, LastResultActivity.class);
+                    startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void Operand(View view){
@@ -132,43 +146,61 @@ public class Calculator extends AppCompatActivity {
                 } catch (NumberFormatException e) { displayOp.setText(""); }
                 break;
         }
+    }
 
-        LinearLayout right_row = findViewById(R.id.rightrow);
-        if(ifAddition || ifSubtract || ifMultiplication || ifDivision){
-            Button buttonEqual = new Button(this);
-            buttonEqual.setHeight(right_row.getHeight());
-            buttonEqual.setWidth(right_row.getWidth());
-            buttonEqual.setText("=");
-            buttonEqual.setOnClickListener(equal);
-            right_row.addView(buttonEqual);
+    View.OnClickListener equal = v -> {
+        finish();
+        valueTwo = Float.parseFloat(displayOp.getText().toString());
+        new Task().execute();
+    };
+
+    class Task extends AsyncTask<Void,Void,Double> {
+        @Override
+        protected Double doInBackground(Void... voids) {
+            try {
+                Socket s = new Socket("192.168.43.188", 9876);
+                DataInputStream dis = new DataInputStream(s.getInputStream());
+                DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+                dos.writeDouble(valueOne);
+                dos.writeChar(operator);
+                dos.writeDouble(valueTwo);
+
+                return dis.readDouble();
+
+            } catch (IOException e) {
+                Log.e("Calculator", "Impossible de se connecter", e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Double res) {
+            if (res != null) {
+                displayRes.setText(res.toString());
+            }
         }
     }
 
-    View.OnClickListener equal = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            valueTwo = Float.parseFloat(displayOp.getText() + "");
-            Runnable runnable = () -> {
-                try {
-                    Socket s = new Socket("192.168.43.188", 9876);
-                    DataInputStream dis = new DataInputStream(s.getInputStream());
-                    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-
-                    dos.writeDouble(valueOne);
-                    dos.writeChar(operator);
-                    dos.writeDouble(valueTwo);
-
-
-                    Double res  = dis.readDouble();
-                    displayRes.setText(res + "");
-
-                } catch (IOException e) {
-                    finish();
-                    e.printStackTrace();
-                }
-            };
-            new Thread(runnable).start();
-        }
-    };
+    @Override
+    public void sendID() {
+        button0 = findViewById(R.id.zero);
+        button1 = findViewById(R.id.un);
+        button2 = findViewById(R.id.deux);
+        button3 = findViewById(R.id.trois);
+        button4 = findViewById(R.id.quatre);
+        button5 = findViewById(R.id.cinq);
+        button6 = findViewById(R.id.six);
+        button7 = findViewById(R.id.sept);
+        button8 = findViewById(R.id.huit);
+        button9 = findViewById(R.id.neuf);
+        buttonAdd = findViewById(R.id.additionne);
+        buttonSub = findViewById(R.id.soustrait);
+        buttonMul = findViewById(R.id.multiplie);
+        buttonDivision = findViewById(R.id.divise);
+        buttonEqual = findViewById(R.id.equal);
+        displayOp = findViewById(R.id.operand);
+        displayRes = findViewById(R.id.result);
+    }
 }
