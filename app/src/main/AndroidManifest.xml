@@ -23,8 +23,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LastResultActivity"
-            android:label="Historique">
+            android:name=".NewActivity"
+            android:label="Fragment">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:parentActivityName="com.nemge.ppe.Calculator"

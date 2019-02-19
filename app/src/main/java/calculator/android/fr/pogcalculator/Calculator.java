@@ -60,7 +60,7 @@ public class Calculator extends AppCompatActivity implements Operand_Fragment.Fr
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.menu:
-                    Intent intent = new Intent(this, LastResultActivity.class);
+                    Intent intent = new Intent(this, NewActivity.class);
                     startActivity(intent);
                 return true;
             default:
@@ -145,14 +145,14 @@ public class Calculator extends AppCompatActivity implements Operand_Fragment.Fr
                     operator='/';
                 } catch (NumberFormatException e) { displayOp.setText(""); }
                 break;
+
+            case R.id.equal:
+                try{
+                    valueTwo = Float.parseFloat(displayOp.getText().toString());
+                    new Task().execute();
+                } catch (NumberFormatException e) { displayOp.setText(""); }
         }
     }
-
-    View.OnClickListener equal = v -> {
-        finish();
-        valueTwo = Float.parseFloat(displayOp.getText().toString());
-        new Task().execute();
-    };
 
     class Task extends AsyncTask<Void,Void,Double> {
         @Override
