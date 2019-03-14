@@ -41,8 +41,4 @@ public class NewActivity extends AppCompatActivity implements AckFragment.OnFrag
     public void onFragmentInteraction() {
         ackText = findViewById(R.id.ackText);
     }
-
-
-
-
 }

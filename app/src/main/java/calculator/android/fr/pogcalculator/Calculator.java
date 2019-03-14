@@ -30,6 +30,8 @@ public class Calculator extends AppCompatActivity implements Operand_Fragment.Fr
 
     float valueOne=0, valueTwo=0;
 
+    String operation = "";
+
     char operator = 'o';
 
     boolean ifAddition, ifSubtract, ifMultiplication, ifDivision;

@@ -16,7 +16,11 @@ public class DisplayFragment extends Fragment {
     private FragmentActivity mListener;
 
     public DisplayFragment() {
-        // Required empty public constructor
+
+    }
+
+    public interface FragmentActivity {
+        void sendID();
     }
 
     @Override
@@ -42,11 +46,6 @@ public class DisplayFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_display, container, false);
         return view;
     }
-
-    public interface FragmentActivity {
-        void sendID();
-    }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

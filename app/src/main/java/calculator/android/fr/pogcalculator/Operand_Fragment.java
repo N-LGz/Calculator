@@ -28,6 +28,10 @@ public class Operand_Fragment extends Fragment {
 
     }
 
+    public interface FragmentActivity {
+        void sendID();
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -50,13 +54,7 @@ public class Operand_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_operand_, container, false);
-
-
         return view;
-    }
-
-    public interface FragmentActivity {
-        void sendID();
     }
 
     @Override
